@@ -205,15 +205,18 @@ class MetaStoreDirectSql {
 
     String productName = null;
 
-    try {
-      productName =  ((Connection)jdoConn.getNativeConnection()).getMetaData().getDatabaseProductName();
+    try (Connection nativeConnection = (Connection) jdoConn.getNativeConnection()) {
+      productName =  nativeConnection.getMetaData().getDatabaseProductName();
     } catch (Throwable t) {
       LOG.warn("Error retrieving product name", t);
     } finally {
-      jdoConn.close(); // We must release the connection before we call other pm methods.
+      jdoConn.close();
     }
 
     if (StringUtils.containsIgnoreCase(productName, "postgresql")) {
+
+      jdoConn = pm.getDataStoreConnection();
+
       try (
         Connection nativeConnection = (Connection) jdoConn.getNativeConnection();
         Statement statement = nativeConnection.createStatement();
