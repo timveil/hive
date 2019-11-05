@@ -213,14 +213,15 @@ class MetaStoreDirectSql {
       jdoConn.close(); // We must release the connection before we call other pm methods.
     }
 
-    if (productName != null && productName.contains("postgresql")) {
+    if (StringUtils.containsIgnoreCase(productName, "postgresql")) {
       try (
         Connection nativeConnection = (Connection) jdoConn.getNativeConnection();
         Statement statement = nativeConnection.createStatement();
         ResultSet resultSet = statement.executeQuery("select version()")) {
-        String version = resultSet.getString(1);
 
-        if (version != null &&  StringUtils.containsIgnoreCase(version, "cockroachdb")) {
+        String version = resultSet.getString("version");
+
+        if (StringUtils.containsIgnoreCase(version, "cockroachdb")) {
           return "cockroachdb";
         }
 
