@@ -947,6 +947,8 @@ public class ObjectStore implements RawStore, Configurable {
     mdb.setOwnerName(db.getOwnerName());
     PrincipalType ownerType = db.getOwnerType();
     mdb.setOwnerType((null == ownerType ? PrincipalType.USER.name() : ownerType.name()));
+
+    LOG.debug("attempting to create database with the following... {}", mdb.toString());
     try {
       openTransaction();
       pm.makePersistent(mdb);

@@ -154,4 +154,17 @@ public class MDatabase {
   public void setCatalogName(String catalogName) {
     this.catalogName = catalogName;
   }
+
+  @Override
+  public String toString() {
+    return "MDatabase{" +
+            "name='" + name + '\'' +
+            ", locationUri='" + locationUri + '\'' +
+            ", description='" + description + '\'' +
+            ", parameters=" + parameters +
+            ", ownerName='" + ownerName + '\'' +
+            ", ownerType='" + ownerType + '\'' +
+            ", catalogName='" + catalogName + '\'' +
+            '}';
+  }
 }
