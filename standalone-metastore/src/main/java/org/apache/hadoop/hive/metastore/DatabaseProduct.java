@@ -54,6 +54,8 @@ public enum DatabaseProduct {
       return ORACLE;
     } else if (productName.contains("postgresql")) {
       return POSTGRES;
+    } else if (productName.contains("cockroachdb")) {
+        return COCKROACHDB;
     } else {
       return OTHER;
     }

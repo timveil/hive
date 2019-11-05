@@ -84,6 +84,7 @@ public final class SQLGenerator {
     case DERBY:
     case MYSQL:
     case POSTGRES:
+      case COCKROACHDB:
     case SQLSERVER:
       for (int numRows = 0; numRows < rows.size(); numRows++) {
         if (numRows % MetastoreConf.getIntVar(conf, ConfVars.DIRECT_SQL_MAX_ELEMENTS_VALUES_CLAUSE) == 0) {
@@ -118,6 +119,8 @@ public final class SQLGenerator {
       //http://dev.mysql.com/doc/refman/5.7/en/select.html
     case ORACLE:
       //https://docs.oracle.com/cd/E17952_01/refman-5.6-en/select.html
+      case COCKROACHDB:
+        return selectStatement;
     case POSTGRES:
       //http://www.postgresql.org/docs/9.0/static/sql-select.html
       return selectStatement + " for update";
@@ -154,6 +157,7 @@ public final class SQLGenerator {
       return "select " + noSelectsqlQuery + " fetch first " + numRows + " rows only";
     case MYSQL:
       //http://www.postgresql.org/docs/7.3/static/queries-limit.html
+      case COCKROACHDB:
     case POSTGRES:
       //https://dev.mysql.com/doc/refman/5.0/en/select.html
       return "select " + noSelectsqlQuery + " limit " + numRows;

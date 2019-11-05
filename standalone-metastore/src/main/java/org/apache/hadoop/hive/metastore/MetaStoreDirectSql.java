@@ -23,11 +23,7 @@ import static org.apache.commons.lang.StringUtils.normalizeSpace;
 import static org.apache.commons.lang.StringUtils.repeat;
 import static org.apache.hadoop.hive.metastore.Warehouse.DEFAULT_CATALOG_NAME;
 
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -206,14 +202,36 @@ class MetaStoreDirectSql {
 
   static String getProductName(PersistenceManager pm) {
     JDOConnection jdoConn = pm.getDataStoreConnection();
+
+    String productName = null;
+
     try {
-      return ((Connection)jdoConn.getNativeConnection()).getMetaData().getDatabaseProductName();
+      productName =  ((Connection)jdoConn.getNativeConnection()).getMetaData().getDatabaseProductName();
     } catch (Throwable t) {
       LOG.warn("Error retrieving product name", t);
-      return null;
     } finally {
       jdoConn.close(); // We must release the connection before we call other pm methods.
     }
+
+    if (productName != null && productName.contains("postgresql")) {
+      try (
+        Connection nativeConnection = (Connection) jdoConn.getNativeConnection();
+        Statement statement = nativeConnection.createStatement();
+        ResultSet resultSet = statement.executeQuery("select version()")) {
+        String version = resultSet.getString(1);
+
+        if (version != null &&  StringUtils.containsIgnoreCase(version, "cockroachdb")) {
+          return "cockroachdb";
+        }
+
+      } catch (Throwable t) {
+        LOG.warn("Error retrieving product name", t);
+      } finally {
+        jdoConn.close(); // We must release the connection before we call other pm methods.
+      }
+    }
+
+    return productName;
   }
 
   private boolean ensureDbInit() {

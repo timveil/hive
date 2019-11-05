@@ -3306,6 +3306,7 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
 
         case MYSQL:
         case POSTGRES:
+        case COCKROACHDB:
         case SQLSERVER:
           s = "select current_timestamp";
           break;
@@ -4681,6 +4682,7 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
           return true;
         }
         break;
+      case COCKROACHDB:
       case POSTGRES:
         //http://www.postgresql.org/docs/8.1/static/errcodes-appendix.html
         if("23505".equals(ex.getSQLState())) {
