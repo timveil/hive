@@ -119,11 +119,11 @@ public final class SQLGenerator {
       //http://dev.mysql.com/doc/refman/5.7/en/select.html
     case ORACLE:
       //https://docs.oracle.com/cd/E17952_01/refman-5.6-en/select.html
-      case COCKROACHDB:
-        return selectStatement;
     case POSTGRES:
       //http://www.postgresql.org/docs/9.0/static/sql-select.html
       return selectStatement + " for update";
+    case COCKROACHDB:
+      return selectStatement;
     case SQLSERVER:
       //https://msdn.microsoft.com/en-us/library/ms189499.aspx
       //https://msdn.microsoft.com/en-us/library/ms187373.aspx
