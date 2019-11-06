@@ -207,6 +207,8 @@ class MetaStoreDirectSql {
 
     try (Connection nativeConnection = (Connection) jdoConn.getNativeConnection()) {
       productName =  nativeConnection.getMetaData().getDatabaseProductName();
+
+      LOG.info("product name MetaStoreDirectSql {}", productName);
     } catch (Throwable t) {
       LOG.warn("Error retrieving product name", t);
     } finally {
@@ -225,7 +227,7 @@ class MetaStoreDirectSql {
         if (resultSet.next()) {
           String version = resultSet.getString("version");
 
-          LOG.info("exact postgres version {}", version);
+          LOG.info("exact postgres version in MetaStoreDirectSql {}", version);
 
           if (StringUtils.containsIgnoreCase(version, "cockroachdb")) {
             return "cockroachdb";

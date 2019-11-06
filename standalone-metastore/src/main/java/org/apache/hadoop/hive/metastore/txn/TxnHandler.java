@@ -3353,6 +3353,9 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
     if (dbProduct != null) return;
     try {
       String s = conn.getMetaData().getDatabaseProductName();
+
+      LOG.info("product name TxnHandler {}", s);
+
       dbProduct = DatabaseProduct.determineDatabaseProduct(s);
       if (dbProduct == DatabaseProduct.OTHER) {
         String msg = "Unrecognized database product name <" + s + ">";
@@ -3365,6 +3368,8 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
       throw new IllegalStateException(msg, e);
     }
 
+
+
     if (DatabaseProduct.POSTGRES.equals(dbProduct)) {
       try (Statement statement = conn.createStatement();
            ResultSet resultSet = statement.executeQuery("select version()")) {
@@ -3372,7 +3377,7 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
         if (resultSet.next()) {
           String version = resultSet.getString("version");
 
-          LOG.info("exact postgres version {}", version);
+          LOG.info("exact postgres version in TxnHandler {}", version);
 
           if (containsIgnoreCase(version, "cockroachdb")) {
             dbProduct = DatabaseProduct.COCKROACHDB;
@@ -3380,7 +3385,7 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
         }
 
       } catch (Throwable t) {
-        LOG.warn("Error retrieving product version", t);
+        LOG.warn("Error retrieving postgres version", t);
       }
     }
   }
