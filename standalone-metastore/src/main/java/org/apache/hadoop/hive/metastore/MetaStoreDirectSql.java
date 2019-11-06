@@ -222,16 +222,20 @@ class MetaStoreDirectSql {
         Statement statement = nativeConnection.createStatement();
         ResultSet resultSet = statement.executeQuery("select version()")) {
 
-        String version = resultSet.getString("version");
+        if (resultSet.next()) {
+          String version = resultSet.getString("version");
 
-        if (StringUtils.containsIgnoreCase(version, "cockroachdb")) {
-          return "cockroachdb";
+          LOG.info("exact postgres version {}", version);
+
+          if (StringUtils.containsIgnoreCase(version, "cockroachdb")) {
+            return "cockroachdb";
+          }
         }
 
       } catch (Throwable t) {
         LOG.warn("Error retrieving product name", t);
       } finally {
-        jdoConn.close(); // We must release the connection before we call other pm methods.
+        jdoConn.close();
       }
     }
 
