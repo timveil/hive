@@ -233,7 +233,7 @@ class MetaStoreDirectSql {
         }
 
       } catch (Throwable t) {
-        LOG.warn("Error retrieving product name", t);
+        LOG.warn("Error retrieving postgres version", t);
       } finally {
         jdoConn.close();
       }
