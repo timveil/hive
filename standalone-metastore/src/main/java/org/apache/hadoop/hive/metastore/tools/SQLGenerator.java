@@ -84,7 +84,7 @@ public final class SQLGenerator {
     case DERBY:
     case MYSQL:
     case POSTGRES:
-      case COCKROACHDB:
+    case COCKROACHDB:
     case SQLSERVER:
       for (int numRows = 0; numRows < rows.size(); numRows++) {
         if (numRows % MetastoreConf.getIntVar(conf, ConfVars.DIRECT_SQL_MAX_ELEMENTS_VALUES_CLAUSE) == 0) {
@@ -157,7 +157,7 @@ public final class SQLGenerator {
       return "select " + noSelectsqlQuery + " fetch first " + numRows + " rows only";
     case MYSQL:
       //http://www.postgresql.org/docs/7.3/static/queries-limit.html
-      case COCKROACHDB:
+    case COCKROACHDB:
     case POSTGRES:
       //https://dev.mysql.com/doc/refman/5.0/en/select.html
       return "select " + noSelectsqlQuery + " limit " + numRows;

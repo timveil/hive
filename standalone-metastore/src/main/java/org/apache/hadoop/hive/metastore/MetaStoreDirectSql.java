@@ -23,7 +23,12 @@ import static org.apache.commons.lang.StringUtils.normalizeSpace;
 import static org.apache.commons.lang.StringUtils.repeat;
 import static org.apache.hadoop.hive.metastore.Warehouse.DEFAULT_CATALOG_NAME;
 
-import java.sql.*;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.ResultSet;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -202,38 +207,27 @@ class MetaStoreDirectSql {
 
   static String getProductName(PersistenceManager pm) {
     JDOConnection jdoConn = pm.getDataStoreConnection();
-
     String productName = null;
-
     try (Connection nativeConnection = (Connection) jdoConn.getNativeConnection()) {
       productName =  nativeConnection.getMetaData().getDatabaseProductName();
-
-      LOG.info("product name MetaStoreDirectSql {}", productName);
     } catch (Throwable t) {
       LOG.warn("Error retrieving product name", t);
     } finally {
-      jdoConn.close();
+      jdoConn.close(); // We must release the connection before we call other pm methods.
     }
 
     if (StringUtils.containsIgnoreCase(productName, "postgresql")) {
-
       jdoConn = pm.getDataStoreConnection();
-
       try (
         Connection nativeConnection = (Connection) jdoConn.getNativeConnection();
         Statement statement = nativeConnection.createStatement();
         ResultSet resultSet = statement.executeQuery("select version()")) {
-
         if (resultSet.next()) {
           String version = resultSet.getString("version");
-
-          LOG.info("exact postgres version in MetaStoreDirectSql {}", version);
-
           if (StringUtils.containsIgnoreCase(version, "cockroachdb")) {
             return "cockroachdb";
           }
         }
-
       } catch (Throwable t) {
         LOG.warn("Error retrieving postgres version", t);
       } finally {

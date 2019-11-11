@@ -535,7 +535,6 @@ public class HiveMetaStore extends ThriftHiveMetastore {
 
       synchronized (HMSHandler.class) {
         String connectionURL = MetaStoreInit.getConnectionURL(conf);
-        LOG.debug("currentUrl == {}, connectionUrl == {}", currentUrl, connectionURL);
         if (currentUrl == null || !currentUrl.equals(connectionURL)) {
           createDefaultDB();
           createDefaultRoles();

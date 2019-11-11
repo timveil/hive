@@ -18,9 +18,6 @@
 
 package org.apache.hadoop.hive.metastore;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.SQLException;
 import java.sql.SQLTransactionRollbackException;
 
@@ -28,18 +25,12 @@ import java.sql.SQLTransactionRollbackException;
 public enum DatabaseProduct {
   DERBY, MYSQL, POSTGRES, ORACLE, SQLSERVER, COCKROACHDB, OTHER;
 
-  private static final Logger LOG = LoggerFactory.getLogger(DatabaseProduct.class);
-
-
   /**
    * Determine the database product type
    * @param productName string to defer database connection
    * @return database product type
    */
   public static DatabaseProduct determineDatabaseProduct(String productName) throws SQLException {
-
-    LOG.debug("provided database product name is [{}]", productName);
-
     if (productName == null) {
       return OTHER;
     }
